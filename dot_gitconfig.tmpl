@@ -1,0 +1,78 @@
+[color]
+    ui = auto
+[user]
+    name = Guillaume Perrin
+    email = {{ .email }}
+	signingkey = {{ .sshPublicKeyPath }}
+[push]
+    default = simple
+	followTags = true
+[pull]
+    rebase = true
+[merge]
+    tool = meld
+	conflictstyle = zdiff3
+[alias]
+    st = status
+    ci = commit -s
+    co = checkout
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    lgd = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset' --abbrev-commit
+    br = branch
+    oops = reset --soft HEAD^1
+    sh = show --show-signature
+    cp = cherry-pick -x
+    wdiff = diff --color-words=. --word-diff=plain
+    cmr = "!f() { set -u; git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD) -o merge_request.create -o merge_request.remove_source_branch -o merge_request.target=$1; }; f"
+    amr = "!f() { set -u; git push -o merge_request.create -o merge_request.remove_source_branch -o merge_request.target=$1; }; f"
+[branch]
+    autosetuprebase = always
+	sort = -committerdate
+[help]
+    autocorrect = -1
+[fetch]
+    recurseSubmodules = false
+	fsckobjects = true
+	prune = true
+	pruneTags = true
+	all = true
+[mergetool]
+    keepBackup = false
+[core]
+    autocrlf = input
+	fsmonitor = true
+	untrackedCache = true
+[commit]
+    gpgsign = true
+	verbose = true
+[gpg]
+    program = gpg
+	format = ssh
+[gpg.ssh]
+    allowedSignersFile = ~/.ssh/allowed_signers
+[rerere]
+  enabled = true
+	autoupdate = true
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+[transfer]
+	fsckobjects = true
+[receive]
+	fsckobjects = true
+[column]
+	ui = auto
+[tag]
+	sort = version:refname
+{{- if .isWork }}
+[includeIf "hasconfig:remote.*.url:https://github.com/**"]
+    path = ~/.gitconfig_github
+[includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
+    path = ~/.gitconfig_github
+{{- end }}

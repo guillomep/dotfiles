@@ -1,4 +1,15 @@
+{{- $email := promptStringOnce . "email" "What is your email address" -}}
 {{- $isWork := promptBoolOnce . "isWork" "Is it your work computer" -}}
+{{- $sshPublicKeyPath := promptStringOnce . "sshPublicKeyPath" "Path of SSH public key" -}}
+{{- $personalEmail := "" -}}
+{{- if $isWork -}}
+{{- $personalEmail = promptStringOnce . "personalEmail" "What is your personal email address" -}}
+{{- end -}}
 
 [data]
+  email = {{ $email | quote }}
   isWork = {{ $isWork }}
+  sshPublicKeyPath = {{ $sshPublicKeyPath | quote }}
+  {{- if $isWork }}
+  personalEmail = {{ $personalEmail | quote }}
+  {{- end }}
