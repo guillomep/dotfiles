@@ -283,27 +283,40 @@ mvn-in-colors() {
 [ -f ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #[ -f ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
+{{- if lookPath "fzf" }}
+source <(fzf --zsh)
+{{- end }}
+{{- if lookPath "kubectl" }}
 source <(kubectl completion zsh)
+{{- end }}
+{{- if lookPath "helm" }}
 source <(helm completion zsh)
+{{- end }}
+{{- if lookPath "helmfile" }}
 source <(helmfile completion zsh)
+{{- end }}
+{{- if lookPath "kind" }}
 source <(kind completion zsh)
+{{- end }}
+{{- if lookPath "cilium" }}
 source <(cilium completion zsh)
+{{- end }}
+{{- if lookPath "jj" }}
 source <(COMPLETE=zsh jj)
+{{- end }}
+{{- if .isWork }}
 source "${HOME}/.config/zsh/zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh"
-{{ if .isWork }}
 complete -C "${HOME}/opt/bin/aws_completer" aws
-{{ end }}
+{{- end }}
 
-{{ if .isWork }}
+{{- if .isWork }}
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 # BEGIN_AWS_SSO_CLI
-{{ end }}
+{{- end }}
 
-{{ if .isWork }}
+{{- if .isWork }}
 # AWS SSO requires `bashcompinit` which needs to be enabled once and
 # only once in your shell.  Hence we do not include the two lines:
 #
@@ -350,4 +363,4 @@ compdef __aws_sso_profile_complete aws-sso-profile
 complete -C /home/gperrin/opt/bin/aws-sso aws-sso
 
 # END_AWS_SSO_CLI
-{{ end }}
+{{- end }}
