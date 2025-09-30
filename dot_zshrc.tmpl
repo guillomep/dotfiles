@@ -1,0 +1,353 @@
+#!/bin/zsh
+
+export SHELL=/bin/zsh
+
+#------- Load ----------
+autoload -U +X bashcompinit && bashcompinit
+autoload -U compinit promptinit colors
+autoload -U zmv
+autoload history-search-end
+autoload -U edit-command-line
+zle -N edit-command-line
+zmodload -i zsh/complist
+zmodload -i zsh/mathfunc
+autoload -U insert-files && zle -N insert-files
+autoload -U predict-on
+zle -N predict-on predict-off #&& predict-on
+autoload history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+
+#--------- Aliases ----------
+alias ls='ls -F'
+alias ll='ls -lah'
+alias grep='grep --color=auto'
+alias v='nvim'
+alias vi='nvim'
+alias vim='nvim'
+alias l='ls'
+alias c='cat'
+alias cp='cp -i'
+alias px='chmod +x'
+alias g='git'
+alias mkdir='mkdir -p'
+alias less='less -F -R -N'
+alias le='less'
+alias dk='docker'
+alias clfmt='clang-format -i'
+# Support alias with sudo
+alias sudo='sudo '
+
+#------------ Color -------------
+colors
+
+#------------ Prompt -----------
+promptinit
+export PS1="%{$fg[red]%}%(?..[%?] )%{$fg_bold[cyan]%}%T %{$fg_bold[blue]%}%n%{$fg_bold[yellow]%}@%{$reset_color%}%m:%{$fg_bold[green]%}%~%{$fg_bold[yellow]%}%(!.#.$)%{$reset_color%} "
+
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable jj git
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' get-revision true
+zstyle ':vcs_info:*' stagedstr '%{%F{green}%B%}●%{%b%f%}'
+zstyle ':vcs_info:*' unstagedstr '%{%F{red}%B%}●%{%b%f%}'
+zstyle ':vcs_info:*' formats "%{%f%}[%{%F{blue}%}%25>…>%b%<<%{$reset_color%}~%{%F{magenta}%}%10>>%i%<<%{$reset_color%}]%u%c"
+zstyle ':vcs_info:*' actionformats "%{%f%}[%{%F{red}%}%a|%m%{$reset_color%}]%u%c"
+zstyle ':vcs_info:*' patch-format '%10>>%p%<< (%n/%a applied)'
+precmd_vcs_info() { vcs_info }
+precmd_functions+=( precmd_vcs_info )
+precmd_kube_info() {
+  if [[ -z "${KUBECONFIG}" && -f "${HOME}/.kube/config" || -f "${KUBECONFIG}" ]]; then
+    local context=$(kubectl config current-context 2>/dev/null)
+    if [[ ! -z "${context}" ]]; then
+      kube_context_info_0_="[%{%F{yellow}%}${context#*/}%{$reset_color%}]"
+    else
+      kube_context_info_0_=""
+    fi
+  else
+    kube_context_info_0_=""
+  fi
+}
+precmd_functions+=( precmd_kube_info )
+setopt prompt_subst
+RPROMPT=\${kube_context_info_0_}\${vcs_info_msg_0_}
+
+#--------- Completion ---------
+fpath=($HOME/.config/zsh/completions $fpath)
+fpath=($HOME/.config/zsh/functions $fpath)
+
+autoload -U compinit && compinit
+
+if [ $(date +'%j') -gt $(date -d "@$(stat -c '%Y' ~/.zcompdump)" +'%j') ]; then
+  compinit
+else
+  compinit -C
+fi
+unsetopt completealiases
+setopt BANG_HIST
+unsetopt LIST_AMBIGUOUS
+
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' file-sort type
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# Complete commmands after .
+compctl -c .
+
+# verboses function
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+#Options completion
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}'
+zstyle ':completion:*' max-errors 3 numeric
+zstyle ':completion:*' use-compctl false
+
+#case insensitive completion
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}'
+zstyle ':completion:*' max-errors 3 numeric
+zstyle ':completion:*' expand prefix suffix
+
+# completion aboce
+setopt NOALWAYSLASTPROMPT
+setopt NOAUTO_REMOVE_SLASH
+setopt LIST_TYPES
+setopt COMPLETE_IN_WORD
+unlimit
+
+#complete in words
+setopt complete_in_word
+
+# --------- Command completion ---------
+# pretty kill completion. colored, cpu load & process tree
+zstyle ':completion:*:kill:*' command 'ps xf -u $USER -o pid,%cpu,cmd'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:*:kill:*' menu yes select
+
+zstyle ':completion:*:rm:*' ignore-line yes
+zstyle ':completion:*:javac:*' files '*.java'
+zstyle ':completion:*:*:open:*:*files' ignored-patterns '*?.aux' '*?.log' '*?.tex'
+
+#---------- Bindkey --------------
+bindkey -v
+bindkey "^R" history-incremental-search-backward #Search
+bindkey '^?' backward-delete-char
+bindkey '^[[1~' beginning-of-line
+bindkey '^[[5~' up-line-or-history
+bindkey '^[[3~' delete-char
+bindkey '^[[4~' end-of-line
+bindkey '^[[6~' down-line-or-history
+bindkey '^[[A' history-beginning-search-backward-end
+bindkey '^[[B' history-beginning-search-forward-end
+bindkey '^[[C' forward-char
+bindkey '^[[D' backward-char
+bindkey '^A'    beginning-of-line       # Home
+bindkey '^E'    end-of-line             # End
+bindkey '^D'    delete-char             # Del
+bindkey '^x^e' edit-command-line
+
+#------------- History ------------------
+export HISTFILE=~/.history
+#how many lines to save
+export SAVEHIST=4096
+export HISTSIZE=4096
+setopt append_history
+setopt extended_history
+setopt inc_append_history
+setopt hist_find_no_dups
+setopt hist_ignore_space
+setopt no_hist_beep
+setopt share_history
+#do not remember noise
+export HISTIGNORE="&:ls:exit:clear"
+setopt hist_ignore_all_dups
+setopt hist_reduce_blankS
+setopt hist_verify #when "!" for history completion, display cmd before execute i
+
+#------------ Misc -----------
+limit coredumpsize 0
+export REPORTTIME=10 #Display time, if the command take more than 10sec
+# No beep
+unsetopt beep
+unsetopt hist_beep
+unsetopt list_beep
+
+setopt auto_cd
+setopt correct # spellcheck commands
+setopt chase_links #Symbolic links will be resolve on changing directory
+
+#Export preference
+export EDITOR="nvim"
+export LANG="en_US.UTF-8"
+export LC_TIME="fr_FR.UTF-8"
+export LC_MEASUREMENT="fr_FR.UTF-8"
+#export LC_ALL="en_US.UTF-8"
+export GREP_COLOR="mt=7"                     #matches in invert color
+export MAKEFLAGS=-j4
+set -o vi # vi mode
+
+#Pushd options
+setopt AUTO_PUSHD #Pushd on cd cmd
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT
+unsetopt BG_NICE #Don't run BG jobs with lower proprety
+unsetopt HUP #Nohup
+
+#---------- Window title ------------
+case $TERM in
+        *xterm*|rxvt|rxvt-unicode|rxvt-256color|rxvt-unicode-256color|(dt|k|E)term)
+                precmd () { print -Pn "\e]0;[%n@%M][%~]%#\a" } 
+                preexec () { print -Pn "\e]0;[%n@%M][%~]%# ($1)\a" }
+                ;;
+        screen)
+                precmd () {
+                        print -Pn "\e]83;title \"$1\"\a" 
+                        print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~]\a" 
+                }
+                preexec () {
+                        print -Pn "\e]83;title \"$1\"\a" 
+                        print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~] ($1)\a" 
+                }
+                ;; 
+esac
+
+#Same dir on open tab
+precmd () {print -Pn "\e]2; %~/ \a"}
+preexec () {print -Pn "\e]2; %~/ \a"}
+
+#----------- Colors for Man Pages ----------
+export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
+export LESS_TERMCAP_md=$'\E[01;31m'       # begin bold
+export LESS_TERMCAP_me=$'\E[0m'           # end mode
+export LESS_TERMCAP_so=$'\E[01;44;33m'    # begin standout-mode - info box
+export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
+export LESS_TERMCAP_us=$'\E[01;32m'       # begin underline
+export LESS_TERMCAP_ue=$'\E[0m'           # end underline
+
+#---------- PATH ----------
+export PATH="${HOME}/opt/bin:/usr/local/bin:${HOME}/.local/bin:${HOME}/opt/npm-packages/bin:${HOME}/.local/bin:${PATH}"
+
+# Go lang
+export GOPATH=$HOME/workspace
+export PATH=$PATH:/usr/local/go/bin
+
+#---------- Functions ----------
+
+# ls if empty command
+auto-ls () {
+    if [[ $#BUFFER -eq 0 ]]; then
+        echo ""
+        ls
+        zle redisplay
+    else
+        zle .$WIDGET
+    fi
+}
+zle -N accept-line auto-ls
+zle -N other-widget auto-ls
+
+# Create dir and go into
+# usage: mkcd <name>
+function mkcd () { mkdir -p "$@" && eval cd "\"\$$#\""; }
+
+# Known host completion
+zstyle -e ':completion::*:*:*:hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+
+# Colorize maven output
+mvn-in-colors() {
+  # Formatting constants
+  local color_red=$(tput bold)$(tput setaf 1)
+  local color_green=$(tput bold)$(tput setaf 2)
+  local color_yellow=$(tput bold)$(tput setaf 3)
+  local color_white=$(tput bold)$(tput setaf 7)
+  local color_reset=$(tput sgr0)
+  # Make sure formatting is reset
+  echo -ne ${color_reset}
+  # TMP file to store the exit code of the mvn command
+  tmp_file=$(mktemp)
+  # Filter mvn output using sed
+  (command mvn $@ ; echo $? > $tmp_file) | sed \
+    -e "s/\(.*-\{55\}\+$\|.*\[INFO\] Scanning for projects.*\|.*\[INFO\] Building.*\|^Running .*\|^ T E S T S$\|^Results.*\)/${color_white}\1${color_reset}/g" \
+    -e "s/\(.*\[INFO\] BUILD SUCCESS$\|^Tests run:.*Failures: 0.*Errors: 0.*Skipped: 0.*\)/${color_green}\1${color_reset}/g" \
+    -e "s/\(.*\[WARNING].*\|^NOTE: Maven is executing in offline mode\.\|^Tests run:.*Failures: 0, Errors: 0, Skipped: [^0].*\)/${color_yellow}\1${color_reset}/g" \
+    -e "s/\(.*\[INFO\] BUILD FAILURE\|.* <<< FAILURE!$\|.* <<< ERROR!$\|^Tests in error:.*\|^Tests run:.*Failures: [^0].*\|^Tests run:.*Errors: [^0].*\)/${color_red}\1${color_reset}/g"
+  # Make sure formatting is reset
+  echo -ne ${color_reset}
+  # Return the exit code of the mvn command
+  read mvn_exit_code < $tmp_file
+  \rm -f $tmp_file
+  return $mvn_exit_code
+}
+#alias mvn=mvn-in-colors
+[ -f ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#[ -f ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source <(kubectl completion zsh)
+source <(helm completion zsh)
+source <(helmfile completion zsh)
+source <(kind completion zsh)
+source <(cilium completion zsh)
+source <(COMPLETE=zsh jj)
+source "${HOME}/.config/zsh/zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh"
+{{ if .isWork }}
+complete -C "${HOME}/opt/bin/aws_completer" aws
+{{ end }}
+
+{{ if .isWork }}
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# BEGIN_AWS_SSO_CLI
+{{ end }}
+
+{{ if .isWork }}
+# AWS SSO requires `bashcompinit` which needs to be enabled once and
+# only once in your shell.  Hence we do not include the two lines:
+#
+# autoload -Uz +X compinit && compinit
+# autoload -Uz +X bashcompinit && bashcompinit
+#
+# If you do not already have these lines, you must COPY the lines 
+# above, place it OUTSIDE of the BEGIN/END_AWS_SSO_CLI markers
+# and of course uncomment it
+
+__aws_sso_profile_complete() {
+     local _args=${AWS_SSO_HELPER_ARGS:- -L error}
+    _multi_parts : "($(/home/gperrin/opt/bin/aws-sso ${=_args} list --csv Profile))"
+}
+
+aws-sso-profile() {
+    local _args=${AWS_SSO_HELPER_ARGS:- -L error}
+    if [ -n "$AWS_PROFILE" ]; then
+        echo "Unable to assume a role while AWS_PROFILE is set"
+        return 1
+    fi
+
+    if [ -z "$1" ]; then
+        echo "Usage: aws-sso-profile <profile>"
+        return 1
+    fi
+
+    eval $(/home/gperrin/opt/bin/aws-sso ${=_args} eval -p "$1")
+    if [ "$AWS_SSO_PROFILE" != "$1" ]; then
+        return 1
+    fi
+}
+
+aws-sso-clear() {
+    local _args=${AWS_SSO_HELPER_ARGS:- -L error}
+    if [ -z "$AWS_SSO_PROFILE" ]; then
+        echo "AWS_SSO_PROFILE is not set"
+        return 1
+    fi
+    eval $(/home/gperrin/opt/bin/aws-sso ${=_args} eval -c)
+}
+
+compdef __aws_sso_profile_complete aws-sso-profile
+complete -C /home/gperrin/opt/bin/aws-sso aws-sso
+
+# END_AWS_SSO_CLI
+{{ end }}
