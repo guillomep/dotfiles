@@ -22,9 +22,14 @@ zle -N history-beginning-search-forward-end history-search-end
 alias ls='ls -F'
 alias ll='ls -lah'
 alias grep='grep --color=auto'
+{{- if lookPath "nvim" }}
 alias v='nvim'
 alias vi='nvim'
 alias vim='nvim'
+{{- else }}
+alias v='vim'
+alias vi='vim'
+{{- end }}
 alias l='ls'
 alias c='cat'
 alias cp='cp -i'
@@ -178,7 +183,11 @@ setopt correct # spellcheck commands
 setopt chase_links #Symbolic links will be resolve on changing directory
 
 #Export preference
+{{- if lookPath "nvim" }}
 export EDITOR="nvim"
+{{- else }}
+export EDITOR="vim"
+{{- end }}
 export LANG="en_US.UTF-8"
 export LC_TIME="fr_FR.UTF-8"
 export LC_MEASUREMENT="fr_FR.UTF-8"
