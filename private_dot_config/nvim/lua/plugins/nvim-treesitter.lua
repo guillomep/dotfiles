@@ -36,6 +36,7 @@ return {
 				"gotmpl",
 				"groovy",
 				"hcl",
+				"helm",
 				"html",
 				"java",
 				"javadoc",
