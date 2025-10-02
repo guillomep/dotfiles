@@ -4,6 +4,10 @@ README.md
 .gitconfig_github
 {{- end }}
 
+{{- if not (lookPath "nvim") }}
+.config/nvim/
+{{- end }}
+
 {{- if not (hasKey . "ai") }}
 .config/nvim/lua/plugins/codecompanion.lua
 .config/nvim/lua/plugins/mcphub.lua
