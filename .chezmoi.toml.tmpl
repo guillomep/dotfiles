@@ -13,3 +13,21 @@
   {{- if $isWork }}
   personalEmail = {{ $personalEmail | quote }}
   {{- end }}
+
+{{- $aiEnable := promptBool "Use AI" }}
+{{- if $aiEnable }}
+{{- $aiUrl := promptStringOnce . "ai.url" "URL of OpenAI API" }}
+{{- $aiGeneralModel := promptStringOnce . "ai.generalModel" "Default general AI model" }}
+{{- $aiCodingModel := promptStringOnce . "ai.codingModel" "Default coding AI model" }}
+{{- $aiApiKeyItemName := promptStringOnce . "ai.apiKeyItemName" "Name of the item in password manager" }}
+[data.ai]
+  url = {{ $aiUrl | quote }}
+  generalModel = {{ $aiGeneralModel | quote }}
+  codingModel = {{ $aiCodingModel | quote }}
+  apiKeyItemName = {{ $aiApiKeyItemName | quote }}
+{{- end }}
+
+{{- if $isWork }}
+[bitwarden]
+  unlock = "auto"
+{{- end }}

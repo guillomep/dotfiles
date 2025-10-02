@@ -1,0 +1,169 @@
+local kind_icons = {
+	-- LLM Provider icons
+	claude = "󰋦",
+	openai = "󱢆",
+	codestral = "󱎥",
+	gemini = "",
+	Groq = "",
+	Openrouter = "󱂇",
+	Ollama = "󰳆",
+	["Llama.cpp"] = "󰳆",
+	Deepseek = "",
+}
+
+local source_icons = {
+	minuet = "󱗻",
+	orgmode = "",
+	otter = "󰼁",
+	nvim_lsp = "",
+	lsp = "",
+	buffer = "",
+	luasnip = "",
+	snippets = "",
+	path = "",
+	git = "",
+	tags = "",
+	cmdline = "󰘳",
+	latex_symbols = "",
+	cmp_nvim_r = "󰟔",
+	codeium = "󰩂",
+	-- FALLBACK
+	fallback = "󰜚",
+}
+
+return {
+    {{- if hasKey . "ai" }}
+	{
+		"milanglacier/minuet-ai.nvim",
+		dependencies = { "nvim-lua/plenary.nvim", "Saghen/blink.cmp" },
+		lazy = true,
+		config = function()
+			require("minuet").setup({
+				provider = "openai_compatible",
+				provider_options = {
+					openai_compatible = {
+						model = {{ .ai.codingModel | quote }},
+						stream = false,
+						end_point = "{{ .ai.url }}/chat/completions",
+						api_key = function()
+                            {{- if .isWork }}
+							return {{ (bitwarden "item" .ai.apiKeyItemName).login.password | quote }}
+                            {{- end }}
+						end,
+						name = "Default AI",
+					},
+				},
+				request_timeout = 10,
+			})
+		end,
+	},
+    {{- end }}
+	{
+		"saghen/blink.cmp",
+		-- optional: provides snippets for the snippet source
+		dependencies = { "rafamadriz/friendly-snippets" },
+
+		-- use a release tag to download pre-built binaries
+		version = "1.*",
+
+		config = function()
+			require("blink.cmp").setup({
+				cmdline = {
+					enabled = true,
+				},
+				completion = {
+					-- Recommended to avoid unnecessary request
+					trigger = { prefetch_on_insert = false },
+					documentation = {
+						auto_show = true,
+						auto_show_delay_ms = 0,
+						treesitter_highlighting = true,
+					},
+					keyword = {
+						range = "prefix",
+					},
+					list = {
+						selection = {
+							preselect = true,
+							auto_insert = false,
+						},
+					},
+					accept = {
+						dot_repeat = false,
+						create_undo_point = true,
+						auto_brackets = {
+							enabled = false,
+						},
+					},
+					menu = {
+						draw = {
+							columns = {
+								{ "label", "label_description", gap = 1 },
+								{ "kind_icon", "kind" },
+								{ "source_icon" },
+							},
+							components = {
+								source_icon = {
+									-- don't truncate source_icon
+									ellipsis = false,
+									text = function(ctx)
+										return source_icons[ctx.source_name:lower()] or source_icons.fallback
+									end,
+									highlight = "BlinkCmpSource",
+								},
+							},
+						},
+					},
+				},
+				appearance = {
+					use_nvim_cmp_as_default = true,
+					nerd_font_variant = "mono",
+					kind_icons = kind_icons,
+				},
+				keymap = {
+					preset = "super-tab",
+                    {{- if hasKey . "ai" }}
+					-- Manually invoke minuet completion.
+					["<A-y>"] = require("minuet").make_blink_map(),
+                    {{- end }}
+				},
+				sources = {
+					default = { "lsp", "path", "buffer", "snippets" },
+					providers = {
+						buffer = {
+							enabled = true,
+						},
+						snippets = {
+							enabled = true,
+						},
+                        {{- if hasKey . "ai" }}
+						minuet = {
+							enabled = true,
+							name = "minuet",
+							module = "minuet.blink",
+							-- Set to false when minuet is only manually called (not in default sources)
+							async = false,
+							timeout_ms = 10000,
+							score_offset = 50,
+						},
+                        {{- end }}
+					},
+				},
+				fuzzy = {
+					implementation = "rust",
+					frecency = {
+						enabled = true,
+					},
+					use_proximity = true,
+					-- max_typos = function(_)
+					-- 	return 0
+					-- end,
+					prebuilt_binaries = {
+						download = true,
+						ignore_version_mismatch = true,
+					},
+				},
+			})
+		end,
+	},
+}

@@ -3,3 +3,8 @@ README.md
 {{- if not .isWork }}
 .gitconfig_github
 {{- end }}
+
+{{- if not (hasKey . "ai") }}
+.config/nvim/lua/plugins/codecompanion.lua
+.config/nvim/lua/plugins/mcphub.lua
+{{- end }}
