@@ -23,6 +23,8 @@ return {
 			{ "<leader>g", group = "git" },
 			{ "<leader>s", group = "search" },
 			{ "<leader>x", group = "trouble", icon = { name = "trouble", cat = "filetype" } },
+			{ "<leader>cj", group = "java", icon = { name = "java", cat = "filetype" } },
+			{ "cj", group = "java", icon = { name = "java", cat = "filetype" } },
 			{ "<up>", hidden = true },
 			{ "<down>", hidden = true },
 			{ "<left>", hidden = true },
