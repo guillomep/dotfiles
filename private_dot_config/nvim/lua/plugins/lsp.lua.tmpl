@@ -32,6 +32,10 @@ return {
 					"stylua",
 					-- Python
 					"pyright",
+					{{- if .sonar }}
+					-- Sonar
+					"sonarlint-language-server",
+					{{- end }}
 					-- Terraform
 					"terraform-ls",
 					"terraform",
@@ -89,5 +93,47 @@ return {
 				{ "cjrm", "<Cmd>lua require('jdtls').extract_variable()<CR>", desc = "Extract method", mode = { "n" } },
 			},
 		},
+		{{- if .sonar }}
+		{
+			"https://gitlab.com/schrieveslaach/sonarlint.nvim",
+			ft = "java",
+			opts = {
+				server = {
+					connected = {
+						get_credentials = function(client_id, url)
+							return {{ (bitwarden "item" .sonar.tokenItemName).login.password | quote }}
+						end,
+					},
+					cmd = {
+						"sonarlint-language-server",
+						-- Ensure that sonarlint-language-server uses stdio channel
+						"-stdio",
+						"-analyzers",
+						-- paths to the analyzers you need, using those for python and java in this example
+						vim.fn.stdpath("data") .. "/mason/share/sonarlint-analyzers/sonarjava.jar",
+					},
+					settings = {
+						sonarlint = {
+							connectedMode = {
+								connections = {
+									sonarqube = {
+										{
+											connectionId = {{ (bitwarden "item" .sonar.tokenItemName).login.username | quote }},
+											-- this is the url that will go into get_credentials
+											serverUrl = {{ .sonar.url | quote }},
+											disableNotifications = false,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				filetypes = {
+					"java",
+				},
+			},
+		},
+		{{- end }}
 	},
 }

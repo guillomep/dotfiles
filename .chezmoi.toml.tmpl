@@ -19,12 +19,21 @@
 {{- $aiUrl := promptStringOnce . "ai.url" "URL of OpenAI API" }}
 {{- $aiGeneralModel := promptStringOnce . "ai.generalModel" "Default general AI model" }}
 {{- $aiCodingModel := promptStringOnce . "ai.codingModel" "Default coding AI model" }}
-{{- $aiApiKeyItemName := promptStringOnce . "ai.apiKeyItemName" "Name of the item in password manager" }}
+{{- $aiApiKeyItemName := promptStringOnce . "ai.apiKeyItemName" "Name of the item for api key in password manager" }}
 [data.ai]
   url = {{ $aiUrl | quote }}
   generalModel = {{ $aiGeneralModel | quote }}
   codingModel = {{ $aiCodingModel | quote }}
   apiKeyItemName = {{ $aiApiKeyItemName | quote }}
+{{- end }}
+
+{{- $sonarEnable := promptBool "Use Sonar" }}
+{{- if $sonarEnable }}
+{{- $sonarUrl := promptStringOnce . "sonar.url" "URL of Sonar" }}
+{{- $sonarTokenItemName := promptStringOnce . "sonar.tokenItemName" "Name of the item for token in password manager" }}
+[data.sonar]
+  url = {{ $sonarUrl | quote }}
+  tokenItemName = {{ $sonarTokenItemName | quote }}
 {{- end }}
 
 {{- if $isWork }}
