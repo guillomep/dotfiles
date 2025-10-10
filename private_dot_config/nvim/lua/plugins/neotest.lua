@@ -2,6 +2,7 @@ return {
 	{
 		"rcasia/neotest-java",
 		ft = "java",
+		lazy = true,
 		dependencies = {
 			"mfussenegger/nvim-jdtls",
 			"mfussenegger/nvim-dap", -- for the debugger
@@ -10,6 +11,7 @@ return {
 	},
 	{
 		"nvim-neotest/neotest",
+		lazy = true,
 		dependencies = {
 			"nvim-neotest/nvim-nio",
 			"nvim-lua/plenary.nvim",
