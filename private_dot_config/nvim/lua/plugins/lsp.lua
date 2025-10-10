@@ -34,6 +34,7 @@ return {
 					"pyright",
 					-- Terraform
 					"terraform-ls",
+					"terraform",
 					"tflint",
 				},
 				auto_update = true,

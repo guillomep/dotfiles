@@ -24,6 +24,7 @@ return {
 		-- Define your formatters
 		formatters_by_ft = {
 			lua = { "stylua" },
+			terraform = { "terraform" },
 		},
 		-- Set default options
 		default_format_opts = {
