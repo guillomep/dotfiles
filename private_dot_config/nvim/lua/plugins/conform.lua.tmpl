@@ -21,9 +21,25 @@ return {
 		},
 	},
 	opts = {
+ 		{{- $palantirjavaformatBinary := lookPath "palantir-java-format" }}
+		{{- if $palantirjavaformatBinary }}
+		-- Custom formatters
+		formatters = {
+			palentirjavaformat = {
+				command = "/home/gperrin/.local/bin/palantir-java-format",
+				args = {
+					"--palantir",
+					"$FILENAME",
+				},
+			},
+		},
+		{{- end }}
 		-- Define your formatters
 		formatters_by_ft = {
 			lua = { "stylua" },
+			{{- if $palantirjavaformatBinary }}
+			java = { "palentirjavaformat" },
+			{{- end }}
 			terraform = { "terraform" },
 		},
 		-- Set default options
