@@ -51,7 +51,11 @@ promptinit
 export PS1="%{$fg[red]%}%(?..[%?] )%{$fg_bold[cyan]%}%T %{$fg_bold[blue]%}%n%{$fg_bold[yellow]%}@%{$reset_color%}%m:%{$fg_bold[green]%}%~%{$fg_bold[yellow]%}%(!.#.$)%{$reset_color%} "
 
 autoload -Uz vcs_info
+{{- if lookPath "jj" }}
 zstyle ':vcs_info:*' enable jj git
+{{- else }}
+zstyle ':vcs_info:*' enable git
+{{- end }}
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' get-revision true
 zstyle ':vcs_info:*' stagedstr '%{%F{green}%B%}●%{%b%f%}'
@@ -61,6 +65,7 @@ zstyle ':vcs_info:*' actionformats "%{%f%}[%{%F{red}%}%a|%m%{$reset_color%}]%u%c
 zstyle ':vcs_info:*' patch-format '%10>>%p%<< (%n/%a applied)'
 precmd_vcs_info() { vcs_info }
 precmd_functions+=( precmd_vcs_info )
+{{- if lookPath "kubectl" }}
 precmd_kube_info() {
   if [[ -z "${KUBECONFIG}" && -f "${HOME}/.kube/config" || -f "${KUBECONFIG}" ]]; then
     local context=$(kubectl config current-context 2>/dev/null)
@@ -76,6 +81,7 @@ precmd_kube_info() {
 precmd_functions+=( precmd_kube_info )
 setopt prompt_subst
 RPROMPT=\${kube_context_info_0_}\${vcs_info_msg_0_}
+{{- end }}
 
 #--------- Completion ---------
 fpath=($HOME/.config/zsh/completions $fpath)
