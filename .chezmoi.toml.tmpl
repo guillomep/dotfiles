@@ -6,6 +6,10 @@
 {{- $personalEmail = promptStringOnce . "personalEmail" "What is your personal email address" -}}
 {{- end -}}
 
+[cd]
+  command = "env"
+  args = ["zsh"]
+
 [data]
   email = {{ $email | quote }}
   isWork = {{ $isWork }}
