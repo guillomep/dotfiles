@@ -269,6 +269,7 @@ function mkcd () { mkdir -p "$@" && eval cd "\"\$$#\""; }
 # Known host completion
 zstyle -e ':completion::*:*:*:hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
+if [ -f ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; fi
 #[ -f ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 {{- if lookPath "fzf" }}
