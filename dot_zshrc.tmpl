@@ -269,9 +269,6 @@ function mkcd () { mkdir -p "$@" && eval cd "\"\$$#\""; }
 # Known host completion
 zstyle -e ':completion::*:*:*:hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
-if [ -f ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; fi
-#[ -f ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-
 {{- if lookPath "fzf" }}
 source <(fzf --zsh)
 {{- end }}
@@ -353,3 +350,7 @@ complete -C /home/gperrin/opt/bin/aws-sso aws-sso
 
 # END_AWS_SSO_CLI
 {{- end }}
+
+if [ -f ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh; fi
+if [ -f ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; fi
+
