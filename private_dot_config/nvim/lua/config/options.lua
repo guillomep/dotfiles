@@ -73,3 +73,11 @@ o.foldnestmax = 4
 o.foldtext = ""
 o.foldlevel = 99
 o.foldlevelstart = 99
+
+-- Diagnostics
+vim.diagnostic.config({
+	float = {
+		source = "always",
+		border = vim.o.winborder,
+	},
+})

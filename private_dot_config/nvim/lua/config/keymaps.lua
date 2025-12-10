@@ -35,3 +35,6 @@ keymap("n", "*", ":set hls<cr>*", { desc = "Force high on search" })
 
 -- Toggle line numbers
 keymap("n", "<C-L>", ":set nu!<cr>:set rnu!<cr>", { desc = "Toggle line numbers" })
+
+-- Open diagnostics
+keymap("n", "<leader>xd", function() vim.diagnostic.open_float() end, { desc = "Show line diagnostics" })
