@@ -12,3 +12,8 @@ README.md
 .config/nvim/lua/plugins/codecompanion.lua
 .config/nvim/lua/plugins/mcphub.lua
 {{- end }}
+
+{{- if not (lookPath "claude") }}
+.config/nvim/lua/plugins/claude.lua
+{{- end }}
+
