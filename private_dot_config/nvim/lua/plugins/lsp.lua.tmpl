@@ -36,7 +36,7 @@ return {
 						-- Python
 						"pylsp",
 						"pyright",
-						{{- if .sonar }}
+						{{- if hasKey . "sonar" }}
 						-- Sonar
 						"sonarlint-language-server",
 						{{- end }}
@@ -99,7 +99,7 @@ return {
 			{ "cjrm", "<Cmd>lua require('jdtls').extract_variable()<CR>", desc = "Extract method", mode = { "n" } },
 		},
 	},
-	{{- if .sonar }}
+	{{- if hasKey . "sonar" }}
 	{
 		"https://gitlab.com/schrieveslaach/sonarlint.nvim",
 		ft = "java",
