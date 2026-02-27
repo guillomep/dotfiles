@@ -11,3 +11,7 @@
     exact = true
     stripComponents = 1
     include = [ "*/*.zsh" ]
+
+[".local/share/nvim/lombok/lombok.jar"]
+    type = "file"
+    url = "https://projectlombok.org/downloads/lombok.jar"
