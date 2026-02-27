@@ -18,7 +18,7 @@ zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
 #--------- Aliases ----------
-alias ls='ls -F'
+alias ls='ls -F --hyperlink=auto'
 alias ll='ls -lah'
 alias grep='grep --color=auto'
 {{- if lookPath "nvim" }}
