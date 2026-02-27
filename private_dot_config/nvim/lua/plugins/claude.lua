@@ -2,6 +2,7 @@ return {
 	"coder/claudecode.nvim",
 	dependencies = { "folke/snacks.nvim" },
 	lazy = true,
+	enabled = false,
 	keys = {
 		{ "<leader>ac", nil, desc = "Claude Code" },
 		{ "<leader>acc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
