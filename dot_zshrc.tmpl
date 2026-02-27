@@ -64,6 +64,8 @@ zstyle ':vcs_info:*' actionformats "%{%f%}[%{%F{red}%}%a|%m%{$reset_color%}]%u%c
 zstyle ':vcs_info:*' patch-format '%10>>%p%<< (%n/%a applied)'
 precmd_vcs_info() { vcs_info }
 precmd_functions+=( precmd_vcs_info )
+{{- $precmd := "" }}
+{{- $rprompt := "" }}
 {{- if lookPath "kubectl" }}
 precmd_kube_info() {
   if [[ -z "${KUBECONFIG}" && -f "${HOME}/.kube/config" || -f "${KUBECONFIG}" ]]; then
@@ -77,10 +79,31 @@ precmd_kube_info() {
     kube_context_info_0_=""
   fi
 }
-precmd_functions+=( precmd_kube_info )
-setopt prompt_subst
-RPROMPT=\${kube_context_info_0_}\${vcs_info_msg_0_}
+{{- $precmd = print $precmd " precmd_kube_info"}}
+{{- $rprompt = print $rprompt "\\${kube_context_info_0_}"}}
 {{- end }}
+{{- if lookPath "aws-sso" }}
+precmd_aws_sso_info() {
+    if [[ -n "${AWS_SSO_PROFILE}" && -n ${AWS_SSO_SESSION_EXPIRATION} ]]; then
+      local exp=$(date -d $AWS_SSO_SESSION_EXPIRATION "+%s")
+      local cur=$(date "+%s")
+      if [[ ${cur} -lt ${exp} ]]; then
+          aws_sso_profile_info_0_="[%{%F{green}%}${AWS_SSO_PROFILE}%{$reset_color%}]"
+      else
+        aws_sso_profile_info_0_=""
+      fi
+    else
+      aws_sso_profile_info_0_=""
+    fi
+}
+{{- $precmd = print $precmd " precmd_aws_sso_info"}}
+{{- $rprompt = print $rprompt "\\${aws_sso_profile_info_0_}"}}
+{{- end }}
+{{- if $precmd }}
+precmd_functions+=({{ $precmd }} )
+{{- end }}
+setopt prompt_subst
+RPROMPT={{ $rprompt }}\${vcs_info_msg_0_}
 
 #--------- Completion ---------
 fpath=($HOME/.config/zsh/completions $fpath)
