@@ -248,6 +248,11 @@ export PATH="${HOME}/opt/bin:/usr/local/bin:${HOME}/.local/bin:${HOME}/opt/npm-p
 export GOPATH=$HOME/workspace
 export PATH=$PATH:/usr/local/go/bin
 
+{{- if lookPath "opencode" }}
+# opencode
+export PATH=/home/gperrin/.opencode/bin:$PATH
+{{- end }}
+
 #---------- Functions ----------
 
 # ls if empty command
@@ -354,4 +359,3 @@ complete -C /home/gperrin/opt/bin/aws-sso aws-sso
 
 if [ -f ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then source ~/.config/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh; fi
 if [ -f ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; fi
-
