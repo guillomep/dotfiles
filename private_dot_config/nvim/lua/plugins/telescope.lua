@@ -3,6 +3,12 @@ return {
 	tag = "0.1.8",
 	lazy = true,
 	dependencies = { "nvim-lua/plenary.nvim" },
+	opts = {
+		defaults = {
+			path_display = { "smart" },
+			dynamic_preview_title = true,
+		},
+	},
 	--stylua: ignore
 	keys = {
 		{ "<leader>ff", function() require("telescope.builtin").find_files() end, desc = "Telescope find files", },
