@@ -109,11 +109,13 @@ fpath=($HOME/.config/zsh/functions $fpath)
 
 autoload -U compinit && compinit
 
+{{- if ne .chezmoi.os "darwin" -}}
 if [ $(date +'%j') -gt $(date -d "@$(stat -c '%Y' ~/.zcompdump)" +'%j') ]; then
   compinit
 else
   compinit -C
 fi
+{{- end }}
 unsetopt completealiases
 setopt BANG_HIST
 unsetopt LIST_AMBIGUOUS
