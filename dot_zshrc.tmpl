@@ -301,6 +301,9 @@ source <(fzf --zsh)
 {{- if lookPath "kubectl" }}
 source <(kubectl completion zsh)
 {{- end }}
+{{- if lookPath "kubectl-neat" }}
+source <(kubectl neat completion zsh)
+{{- end }}
 {{- if lookPath "helm" }}
 source <(helm completion zsh)
 {{- end }}
