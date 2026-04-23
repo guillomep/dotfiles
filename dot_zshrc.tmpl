@@ -49,11 +49,7 @@ promptinit
 export PS1="%{$fg[red]%}%(?..[%?] )%{$fg_bold[cyan]%}%T %{$fg_bold[blue]%}%n%{$fg_bold[yellow]%}@%{$reset_color%}%m:%{$fg_bold[green]%}%~%{$fg_bold[yellow]%}%(!.#.$)%{$reset_color%} "
 
 autoload -Uz vcs_info
-{{- if lookPath "jj" }}
-zstyle ':vcs_info:*' enable jj git
-{{- else }}
 zstyle ':vcs_info:*' enable git
-{{- end }}
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' get-revision true
 zstyle ':vcs_info:*' stagedstr '%{%F{green}%B%}●%{%b%f%}'
