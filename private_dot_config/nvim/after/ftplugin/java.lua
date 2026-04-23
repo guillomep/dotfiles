@@ -1,3 +1,6 @@
+-- Load dap
+require("plugins.lazy.dap")
+
 local jdtls = require("jdtls")
 local lombok_path = vim.fs.joinpath(vim.fn.stdpath("data"), "lombok", "lombok.jar")
 if vim.fn.filereadable(lombok_path) ~= 1 then

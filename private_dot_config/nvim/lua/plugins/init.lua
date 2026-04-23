@@ -28,7 +28,6 @@ vim.pack.add({
 local here = ... .. "."
 require(here .. "catppuccin")
 require(here .. "bufferline")
-require(here .. "dap")
 require(here .. "lualine")
 require(here .. "telescope")
 require(here .. "autopairs")
