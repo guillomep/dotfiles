@@ -43,6 +43,15 @@ o.wildmode = "list:longest"
 -- View match
 o.showmatch = true
 
+-- Completion
+-- Ensures the menu appears even for a single match and uses the native popup window.
+o.completeopt = "menu,menuone,noselect,popup,fuzzy,preview"
+o.complete = ".,w,b,u,t,o"
+o.autocomplete = true
+o.autocompletedelay = 200
+vim.keymap.set("i", "<Tab>", '(pumvisible() ? "<C-n>" : "<Tab>")', { silent = true, expr = true, remap = false })
+vim.keymap.set("i", "<S-Tab>", '(pumvisible() ? "<C-p>" : "<Tab>")', { silent = true, expr = true, remap = false })
+
 -- Show whitespaces (tab, non-breakable space, traling space)
 o.list = true
 vim.opt.listchars = { nbsp = "¤", tab = "▸ ", trail = "¤", extends = ">", precedes = "<" }
@@ -55,10 +64,10 @@ o.shiftwidth = 4
 o.softtabstop = 4
 
 -- Backup
-o.backup = true
-o.history = 50
-o.backupdir = vim.fn.stdpath("state") .. "/nvim/backup/"
-o.directory = vim.fn.stdpath("state") .. "/nvim/swap/"
+o.backup = false
+o.directory = vim.fn.stdpath("state") .. "/swap/"
+o.undofile = true
+o.undodir = vim.fn.stdpath("state") .. "/undo/"
 
 -- Disable animations
 vim.g.snacks_animate = false

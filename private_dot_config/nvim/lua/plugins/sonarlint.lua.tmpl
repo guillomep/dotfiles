@@ -1,0 +1,42 @@
+{{- if hasKey . "sonar" }}
+require("sonarlint").setup({
+	server = {
+		connected = {
+			get_credentials = function(client_id, url)
+				return {{ (bitwarden "item" .sonar.tokenItemName).login.password | quote }}
+			end,
+		},
+		cmd = {
+			"sonarlint-language-server",
+			-- Ensure that sonarlint-language-server uses stdio channel
+			"-stdio",
+			"-analyzers",
+			-- paths to the analyzers you need
+			vim.fn.stdpath("data") .. "/mason/share/sonarlint-analyzers/sonarjava.jar",
+			vim.fn.stdpath("data") .. "/mason/share/sonarlint-analyzers/sonarpython.jar",
+		},
+		settings = {
+			sonarlint = {
+				connectedMode = {
+					connections = {
+						sonarqube = {
+							{
+                                connectionId = {{ (bitwarden "item" .sonar.tokenItemName).login.username | quote }},
+								-- this is the url that will go into get_credentials
+								serverUrl = {{ .sonar.url | quote }},
+								disableNotifications = false,
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+	filetypes = {
+		"java",
+		"python",
+	},
+})
+{{- else }}
+-- Not used, but here to for init.lua in plugins directory
+{{- end }}

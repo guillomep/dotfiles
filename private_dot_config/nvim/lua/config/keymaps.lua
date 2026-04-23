@@ -37,4 +37,8 @@ keymap("n", "*", ":set hls<cr>*", { desc = "Force high on search" })
 keymap("n", "<C-L>", ":set nu!<cr>:set rnu!<cr>", { desc = "Toggle line numbers" })
 
 -- Open diagnostics
+-- stylua: ignore
 keymap("n", "<leader>xd", function() vim.diagnostic.open_float() end, { desc = "Show line diagnostics" })
+
+-- Ctrl-s for LSP
+keymap({ "n", "i" }, "<C-s>", vim.lsp.buf.signature_help)

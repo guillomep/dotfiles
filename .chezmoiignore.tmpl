@@ -8,19 +8,6 @@ README.md
 .config/nvim/
 {{- end }}
 
-{{- if not (hasKey . "ai") }}
-.config/nvim/lua/plugins/codecompanion.lua
-.config/nvim/lua/plugins/mcphub.lua
-{{- end }}
-
-{{- if not (lookPath "claude") }}
-.config/nvim/lua/plugins/claude.lua
-{{- end }}
-
-{{- if not (lookPath "opencode") }}
-.config/nvim/lua/plugins/opencode.lua
-{{- end }}
-
 {{- if not (lookPath "kitty") }}
 .config/kitty/kitty.conf
 {{- end }}
