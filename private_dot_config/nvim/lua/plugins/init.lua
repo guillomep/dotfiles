@@ -5,6 +5,7 @@ vim.pack.add({
 	{ src = "https://github.com/stevearc/conform.nvim" },
 	{ src = "https://codeberg.org/mfussenegger/nvim-dap" },
 	{ src = "https://github.com/igorlfs/nvim-dap-view" },
+	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
 	{ src = "https://codeberg.org/mfussenegger/nvim-jdtls" },
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
