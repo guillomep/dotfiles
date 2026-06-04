@@ -69,9 +69,6 @@ o.directory = vim.fn.stdpath("state") .. "/swap/"
 o.undofile = true
 o.undodir = vim.fn.stdpath("state") .. "/undo/"
 
--- Disable animations
-vim.g.snacks_animate = false
-
 -- Disable clipboard mangling
 vim.g.clipboard = ""
 
