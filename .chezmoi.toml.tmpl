@@ -20,15 +20,9 @@
 
 {{- $aiEnable := promptBool "Use AI" }}
 {{- if $aiEnable }}
-{{- $aiUrl := promptStringOnce . "ai.url" "URL of OpenAI API" }}
-{{- $aiGeneralModel := promptStringOnce . "ai.generalModel" "Default general AI model" }}
-{{- $aiCodingModel := promptStringOnce . "ai.codingModel" "Default coding AI model" }}
-{{- $aiApiKeyItemName := promptStringOnce . "ai.apiKeyItemName" "Name of the item for api key in password manager" }}
+{{- $aiProjectId := promptStringOnce . "ai.projectId" "Project ID" }}
 [data.ai]
-  url = {{ $aiUrl | quote }}
-  generalModel = {{ $aiGeneralModel | quote }}
-  codingModel = {{ $aiCodingModel | quote }}
-  apiKeyItemName = {{ $aiApiKeyItemName | quote }}
+  projectId = {{ $aiProjectId | quote }}
 {{- end }}
 
 {{- $sonarEnable := promptBool "Use Sonar" }}

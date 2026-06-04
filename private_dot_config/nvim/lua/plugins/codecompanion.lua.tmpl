@@ -1,0 +1,22 @@
+require("codecompanion").setup({
+	interactions = {
+		chat = {
+			adapter = "gemini_cli",
+		},
+	},
+	adapters = {
+		acp = {
+			gemini_cli = function()
+				return require("codecompanion.adapters").extend("gemini_cli", {
+					defaults = {
+						auth_method = "oauth-personal",
+						timeout = 20000, -- 20 seconds
+					},
+					env = {
+						GOOGLE_CLOUD_PROJECT = {{ .ai.projectId | quote }},
+					},
+				})
+			end,
+		},
+	},
+})

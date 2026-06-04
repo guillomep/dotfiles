@@ -3,6 +3,10 @@ vim.pack.add({
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 	{ src = "https://github.com/catppuccin/nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
+	{
+		src = "https://www.github.com/olimorris/codecompanion.nvim",
+		version = vim.version.range("^19.0.0"),
+	},
 	{ src = "https://codeberg.org/mfussenegger/nvim-dap" },
 	{ src = "https://github.com/igorlfs/nvim-dap-view" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
@@ -32,6 +36,7 @@ require(here .. "bufferline")
 require(here .. "lualine")
 require(here .. "telescope")
 require(here .. "autopairs")
+require(here .. "codecompanion")
 require(here .. "conform")
 require(here .. "lsp")
 require(here .. "oil")
