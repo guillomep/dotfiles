@@ -19,8 +19,6 @@ dap.listeners.after.event_terminated["me.dap.keys"] = reset_keys
 dap.listeners.after.disconnected["me.dap.keys"] = reset_keys
 
 dap.listeners.after.event_initialized["me.dap.ui"] = dapview.open
-dap.listeners.after.event_terminated["me.dap.ui"] = dapview.close
-dap.listeners.after.disconnected["me.dap.ui"] = dapview.close
 
 -- stylua: ignore start
 vim.keymap.set("n", "<leader>da", function() require("dap").continue() end, { desc = "Continue" })
