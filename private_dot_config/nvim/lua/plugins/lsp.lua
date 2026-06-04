@@ -78,6 +78,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.lsp.inlay_hint.enable()
 vim.lsp.codelens.enable()
 
-vim.keymap.set("i", "<C-s>", function()
-	vim.lsp.buf.signature_help({ close_events = { "CursorMoved", "BufHidden" } })
-end, { desc = "Signature help" })
+-- stylua: ignore start
+vim.keymap.set("i", "<C-s>", function() vim.lsp.buf.signature_help({ close_events = { "CursorMoved", "BufHidden" } }) end, { desc = "Signature help" })
+vim.keymap.set("n", "grd", function() vim.lsp.buf.definition() end, { desc = "vim.lsp.buf.definition()" })
+vim.keymap.set("n", "grc", function() vim.lsp.buf.declaration() end, { desc = "vim.lsp.buf.declaration()" })
+-- stylua: ignore end
